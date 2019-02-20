@@ -32,12 +32,19 @@ namespace VizLaw_api.DataAccess
         {
             nodeData result = new nodeData();
 
-            foreach(Citation cit in Citations.Where(c => c.from_id == nodeId))
+            foreach (Citation cit in Citations.Where(c => c.from_id == nodeId))
+            {
+                result.nodes.Add(new Node(nodeId, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.to_id).ToString()));
+                break;
+            }
+
+            foreach (Citation cit in Citations.Where(c => c.from_id == nodeId))
             {
                 //add only if currently not in List
                 if(result.nodes.Count(n => n.nodeId == cit.to_id) == 0)
                     result.nodes.Add(new Node(cit.to_id, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.to_id).ToString()));
-                if(result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
+
+                if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
                     result.edges.Add(new Edge(cit.from_id, cit.to_id));
             }
 
