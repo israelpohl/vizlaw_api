@@ -38,6 +38,12 @@ namespace VizLaw_api.DataAccess
                 break;
             }
 
+            foreach (Citation cit in Citations.Where(c => c.to_id == nodeId))
+            {
+                result.nodes.Add(new Node(nodeId, "unknown", cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.to_id).ToString()));
+                break;
+            }
+
             foreach (Citation cit in Citations.Where(c => c.from_id == nodeId))
             {
                 //add only if currently not in List
