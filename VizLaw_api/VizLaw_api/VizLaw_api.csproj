@@ -189,6 +189,9 @@
     <Compile Include="DataAccess\CsvFile.cs" />
     <Compile Include="DataAccess\CsvReader.cs" />
     <Compile Include="DataAccess\CsvWriter.cs" />
+    <Compile Include="DataAccess\Edge.cs" />
+    <Compile Include="DataAccess\NodeData.cs" />
+    <Compile Include="DataAccess\Node.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
