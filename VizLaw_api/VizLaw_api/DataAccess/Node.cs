@@ -3,19 +3,21 @@
     public class Node
     {
 
-        public string NodeId { get ; set; }
-        public string Name { get; set; }
+        public string nodeId { get ; set; }
+        public string name { get; set; }
 
-        public string Date { get; set; }
+        public string date { get; set; }
 
-        public string Court { get; set; }
+        public string court { get; set; }
+        public string numberCitations { get; set; }
 
-        public Node(string nodid, string name, string date, string court)
+        public Node(string Nodid, string Name, string Date, string Court, string numbercitations)
         {
-            NodeId = nodid;
-            Name = name;
-            Date = date;
-            Court = court;
+            nodeId = Nodid;
+            this.name = Name;
+            this.date = Date;
+            this.court = Court;
+            numberCitations = numbercitations;
         }
 
     }
