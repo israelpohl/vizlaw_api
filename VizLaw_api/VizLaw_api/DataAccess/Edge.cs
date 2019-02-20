@@ -2,14 +2,14 @@
 {
     public class Edge
     {
-        public string SourceId { get; set; }
+        public string sourceId { get; set; }
 
-        public string TargetId { get; set; }
+        public string targetId { get; set; }
 
         public Edge(string source, string target)
         {
-            SourceId = source;
-            TargetId = target;
+            sourceId = source;
+            targetId = target;
         }
     }
 }

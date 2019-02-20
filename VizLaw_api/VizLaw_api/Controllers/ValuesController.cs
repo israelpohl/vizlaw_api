@@ -23,7 +23,7 @@ namespace VizLaw_api.Controllers
         }
 
         // GET api/values/5
-        public NodeData Get(int id)
+        public nodeData Get(int id)
         {
             if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
                 CitationNetwork.LoadCitationNetwork();

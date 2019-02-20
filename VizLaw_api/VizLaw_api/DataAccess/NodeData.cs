@@ -5,16 +5,16 @@ using System.Web;
 
 namespace VizLaw_api.DataAccess
 {
-    public class NodeData
+    public class nodeData
     {
-        public List<Node> Nodes;
+        public List<Node> nodes;
 
-        public List<Edge> Edges;
+        public List<Edge> edges;
 
-        public NodeData()
+        public nodeData()
         {
-            Nodes = new List<Node>();
-            Edges = new List<Edge>();
+            nodes = new List<Node>();
+            edges = new List<Edge>();
         }
 
     }

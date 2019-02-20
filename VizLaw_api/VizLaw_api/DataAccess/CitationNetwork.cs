@@ -28,27 +28,27 @@ namespace VizLaw_api.DataAccess
             }
         }
 
-        public static NodeData getNodeData(string nodeId)
+        public static nodeData getNodeData(string nodeId)
         {
-            NodeData result = new NodeData();
+            nodeData result = new nodeData();
 
             foreach(Citation cit in Citations.Where(c => c.from_id == nodeId))
             {
                 //add only if currently not in List
-                if(result.Nodes.Count(n => n.NodeId == cit.to_id) == 0)
-                    result.Nodes.Add(new Node(cit.to_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction, Citations.Count(c => c.to_id == cit.to_id).ToString()));
-                if(result.Edges.Count(e => e.SourceId == cit.from_id && e.TargetId == cit.to_id) == 0)
-                    result.Edges.Add(new Edge(cit.from_id, cit.to_id));
+                if(result.nodes.Count(n => n.nodeId == cit.to_id) == 0)
+                    result.nodes.Add(new Node(cit.to_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction, Citations.Count(c => c.to_id == cit.to_id).ToString()));
+                if(result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
+                    result.edges.Add(new Edge(cit.from_id, cit.to_id));
             }
 
             foreach (Citation cit in Citations.Where(c => c.to_id == nodeId))
             {
                 //add only if currently not in List
-                if (result.Nodes.Count(n => n.NodeId == cit.from_id) == 0)
-                    result.Nodes.Add(new Node(cit.from_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction, Citations.Count(c => c.to_id == cit.from_id).ToString()));
+                if (result.nodes.Count(n => n.nodeId == cit.from_id) == 0)
+                    result.nodes.Add(new Node(cit.from_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction, Citations.Count(c => c.to_id == cit.from_id).ToString()));
 
-                if (result.Edges.Count(e => e.SourceId == cit.from_id && e.TargetId == cit.to_id) == 0)
-                    result.Edges.Add(new Edge(cit.from_id, cit.to_id));
+                if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
+                    result.edges.Add(new Edge(cit.from_id, cit.to_id));
             }
 
             //edges hinzufügen
