@@ -13,7 +13,7 @@ namespace VizLaw_api.Controllers
         {
             ViewBag.Title = "Home Page";
 
-            CitationNetwork net = new CitationNetwork();
+            //CitationNetwork net = new CitationNetwork();
 
             return View();
         }

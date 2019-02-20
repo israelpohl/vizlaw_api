@@ -6,6 +6,7 @@ using System.Web;
 
 namespace VizLaw_api.DataAccess
 {
+    //[Serializable]
     public class Citation
     {
         public string from_case_court_chamber { get; set; }

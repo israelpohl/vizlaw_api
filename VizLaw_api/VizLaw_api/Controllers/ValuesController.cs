@@ -4,21 +4,33 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using VizLaw_api.DataAccess;
 
 namespace VizLaw_api.Controllers
 {
     public class ValuesController : ApiController
     {
         // GET api/values
-        public IEnumerable<string> Get()
+        
+        public IEnumerable<Citation> Get()
         {
-            return new string[] { "value1", "value2" };
+            if(CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
+                CitationNetwork.LoadCitationNetwork();
+            
+            //int count = CitationNetwork.Citations.Where(ct =>ct.from_type != "Law" && ct.to_type != "Law").Count();
+
+            return CitationNetwork.Citations.Where(c=>c.to_type != "Law").Take(20);
         }
 
         // GET api/values/5
-        public string Get(int id)
+        public IEnumerable<Citation> Get(int id)
         {
-            return "value";
+            if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
+                CitationNetwork.LoadCitationNetwork();
+
+            //int count = CitationNetwork.Citations.Where(ct =>ct.from_type != "Law" && ct.to_type != "Law").Count();
+
+            return CitationNetwork.Citations.Where(c => c.to_id==id.ToString());
         }
 
         // POST api/values

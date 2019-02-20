@@ -6,14 +6,14 @@ using System.Web;
 
 namespace VizLaw_api.DataAccess
 {
-    public class CitationNetwork
+    public static class CitationNetwork
     {
-        private DataTable sourceData;
+        private static DataTable sourceData;
 
         //List aof all available Citations
-        public List<Citation> Citations;
+        public static List<Citation> Citations;
 
-        public CitationNetwork()
+        public static void LoadCitationNetwork()
         {
             //Load Data from Source File and stor it in sourceData 
             sourceData = new CsvHelper.CsvReader(AppDomain.CurrentDomain.BaseDirectory + @"\Data\refs.csv") { cSeperator = ',' , cDelimiter='"', HasHeaderRow=true}.ReadIntoDataTable();
