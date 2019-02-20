@@ -36,18 +36,19 @@ namespace VizLaw_api.DataAccess
             {
                 //add only if currently not in List
                 if(result.Nodes.Count(n => n.NodeId == cit.to_id) == 0)
-                    result.Nodes.Add(new Node(cit.to_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction));
-
-                result.Edges.Add(new Edge(cit.from_id, cit.to_id));
+                    result.Nodes.Add(new Node(cit.to_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction, Citations.Count(c => c.to_id == cit.to_id).ToString()));
+                if(result.Edges.Count(e => e.SourceId == cit.from_id && e.TargetId == cit.to_id) == 0)
+                    result.Edges.Add(new Edge(cit.from_id, cit.to_id));
             }
 
             foreach (Citation cit in Citations.Where(c => c.to_id == nodeId))
             {
                 //add only if currently not in List
                 if (result.Nodes.Count(n => n.NodeId == cit.from_id) == 0)
-                    result.Nodes.Add(new Node(cit.from_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction));
+                    result.Nodes.Add(new Node(cit.from_id, cit.from_case_file_number, cit.from_case_date, cit.to_case_court_jurisdiction, Citations.Count(c => c.to_id == cit.from_id).ToString()));
 
-                result.Edges.Add(new Edge(cit.from_id, cit.to_id));
+                if (result.Edges.Count(e => e.SourceId == cit.from_id && e.TargetId == cit.to_id) == 0)
+                    result.Edges.Add(new Edge(cit.from_id, cit.to_id));
             }
 
             //edges hinzufügen
