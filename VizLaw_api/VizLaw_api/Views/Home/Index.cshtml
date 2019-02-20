@@ -1,23 +1,102 @@
-﻿<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+﻿<style>
+    .notice {
+        padding: 15px;
+        background-color: #fafafa;
+        border-left: 6px solid #7f7f84;
+        margin-bottom: 10px;
+        -webkit-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+        -moz-box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+        box-shadow: 0 5px 8px -6px rgba(0,0,0,.2);
+    }
+
+    .notice-sm {
+        padding: 10px;
+        font-size: 80%;
+    }
+
+    .notice-lg {
+        padding: 35px;
+        font-size: large;
+    }
+
+    .notice-success {
+        border-color: #80D651;
+    }
+
+        .notice-success > strong {
+            color: #80D651;
+        }
+
+    .notice-info {
+        border-color: #45ABCD;
+    }
+
+        .notice-info > strong {
+            color: #45ABCD;
+        }
+
+    .notice-warning {
+        border-color: #FEAF20;
+    }
+
+        .notice-warning > strong {
+            color: #FEAF20;
+        }
+
+    .notice-danger {
+        border-color: #d73814;
+    }
+
+        .notice-danger > strong {
+            color: #d73814;
+        }
+        a {
+            text-decoration:none !important;
+        }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: "/Home/GetDemoData",
+            success: function (res) {
+                $("#cases").html(res);
+            },
+            dataType: "html",
+            processData: false,
+            async: true
+        });
+    })
+</script>
+
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    <div class="col-md-3">
+        <div>
+            <h3>Results</h3>
+            <div id="cases">
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
+    <div class="col-md-7">
+        <div style="height: 400px; background-color:lightblue;">
+            <h2>Hier kommt der Graph hin...</h2>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
+    <div class="col-md-2">
+        <h3>Web Hosting</h3>
         <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
         <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
     </div>
