@@ -1,0 +1,9 @@
+﻿@model List<VizLaw_api.DataAccess.Citation>
+@foreach (VizLaw_api.DataAccess.Citation cit in Model)
+{
+<a href="#">
+    <div class="notice notice-info">
+        <strong>@cit.from_case_court_name</strong><br /> @cit.from_case_date
+    </div>
+</a>
+}

@@ -17,5 +17,17 @@ namespace VizLaw_api.Controllers
 
             return View();
         }
+
+
+        public ActionResult GetDemoData()
+        {
+            if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
+                CitationNetwork.LoadCitationNetwork();
+
+            List<Citation> demoCitations = CitationNetwork.Citations.Where(c => c.to_type != "Law").Take(20).ToList();
+
+
+            return PartialView("_CitationPartial", demoCitations);
+        }
     }
 }

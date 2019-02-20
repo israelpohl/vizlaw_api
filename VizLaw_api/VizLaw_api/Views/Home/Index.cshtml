@@ -50,32 +50,53 @@
         .notice-danger > strong {
             color: #d73814;
         }
+        a {
+            text-decoration:none !important;
+        }
 </style>
 
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: "/Home/GetDemoData",
+            success: function (res) {
+                $("#cases").html(res);
+            },
+            dataType: "html",
+            processData: false,
+            async: true
+        });
+    })
+</script>
+
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div>
-            <div class="notice notice-success">
-                <strong>Notice</strong> notice-success
-            </div>
-            <div class="notice notice-danger">
-                <strong>Notice</strong> notice-danger
-            </div>
-            <div class="notice notice-info">
-                <strong>Notice</strong> notice-info
-            </div>
-            <div class="notice notice-warning">
-                <strong>Notice</strong> notice-warning
+            <h3>Results</h3>
+            <div id="cases">
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
+                <div class="notice notice-info">
+                    <strong>Notice</strong> notice-info
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-md-7">
         <div style="height: 400px; background-color:lightblue;">
             <h2>Hier kommt der Graph hin...</h2>
         </div>
     </div>
     <div class="col-md-2">
-        <h2>Web Hosting</h2>
+        <h3>Web Hosting</h3>
         <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
         <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
     </div>
