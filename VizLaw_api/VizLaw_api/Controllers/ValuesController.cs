@@ -23,14 +23,15 @@ namespace VizLaw_api.Controllers
         }
 
         // GET api/values/5
-        public IEnumerable<Citation> Get(int id)
+        public NodeData Get(int id)
         {
             if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
                 CitationNetwork.LoadCitationNetwork();
 
             //int count = CitationNetwork.Citations.Where(ct =>ct.from_type != "Law" && ct.to_type != "Law").Count();
 
-            return CitationNetwork.Citations.Where(c => c.to_id==id.ToString());
+            //return CitationNetwork.Citations.Where(c => c.to_id==id.ToString());
+            return CitationNetwork.getNodeData(id.ToString());
         }
 
         // POST api/values
