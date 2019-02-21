@@ -30,38 +30,39 @@ namespace VizLaw_api.DataAccess
 
         public static nodeData getNodeData(string nodeId)
         {
+            //Load data of origin decision
+            CourtDecision sourceDecision = Data.OpenLegalDb.getCourtDecision(nodeId);
+
             nodeData result = new nodeData();
 
-            foreach (Citation cit in Citations.Where(c => c.from_id == nodeId))
-            {
-                result.nodes.Add(new Node(nodeId, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.to_id).ToString()));
-                break;
-            }
+            result.nodes.Add(new Node(nodeId, sourceDecision.file_number , sourceDecision.date, sourceDecision.court.level_of_appeal, Citations.Count(c => c.to_id == nodeId).ToString()));
 
-            foreach (Citation cit in Citations.Where(c => c.to_id == nodeId))
-            {
-                result.nodes.Add(new Node(nodeId, "unknown", cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.to_id).ToString()));
-                break;
-            }
 
             foreach (Citation cit in Citations.Where(c => c.from_id == nodeId))
             {
                 //add only if currently not in List
-                if(result.nodes.Count(n => n.nodeId == cit.to_id) == 0)
-                    result.nodes.Add(new Node(cit.to_id, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.to_id).ToString()));
+                if (result.nodes.Count(n => n.nodeId == cit.to_id || cit.from_case_file_number == cit.from_case_file_number) == 0)
+                {
 
-                if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
-                    result.edges.Add(new Edge(cit.from_id, cit.to_id));
+                    result.nodes.Add(new Node(cit.to_id, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.to_id && c.to_type != "Law").ToString()));
+
+                    if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
+                        result.edges.Add(new Edge(cit.from_id, cit.to_id));
+                }
+            
             }
 
             foreach (Citation cit in Citations.Where(c => c.to_id == nodeId))
             {
                 //add only if currently not in List
-                if (result.nodes.Count(n => n.nodeId == cit.from_id) == 0)
+                if (result.nodes.Count(n => n.nodeId == cit.from_id || cit.from_case_file_number == n.name ) == 0)
+                {
                     result.nodes.Add(new Node(cit.from_id, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.from_id).ToString()));
 
-                if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
-                    result.edges.Add(new Edge(cit.from_id, cit.to_id));
+                    if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
+                        result.edges.Add(new Edge(cit.from_id, cit.to_id));
+                }
+                
             }
 
             //edges hinzufügen
