@@ -70,7 +70,7 @@ namespace VizLaw_api.Data
             result.court.id = decision["court"]["id"].ToString();
             result.court.name = decision["court"]["name"].ToString();
             result.court.slug = decision["court"]["slug"];
-            result.court.city = decision["court"]["city"];
+            result.court.city = decision["court"]["city"] != null ? decision["court"]["city"].ToString() : "";
             result.court.state = decision["court"]["state"].ToString();
             result.court.jurisdiction = decision["court"]["jurisdiction"];
             result.court.level_of_appeal = decision["court"]["level_of_appeal"];
