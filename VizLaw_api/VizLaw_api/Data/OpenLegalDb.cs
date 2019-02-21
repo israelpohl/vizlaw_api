@@ -23,8 +23,10 @@ namespace VizLaw_api.Data
             // Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
-            JsonValue dataObjects = null; ;
-
+            JsonValue dataObjects = null;
+            //string accessToken = "9ac38da25c98106b3a6f056614b09ea738a02928";
+            client.DefaultRequestHeaders.Add("Authorization", "Token 9ac38da25c98106b3a6f056614b09ea738a02928");
+            //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Token", accessToken);
             // List data response.
             HttpResponseMessage response = client.GetAsync(urlParameters).Result;  // Blocking call! Program will wait here until a response is received or a timeout occurs.
             if (response.IsSuccessStatusCode)
@@ -36,8 +38,8 @@ namespace VizLaw_api.Data
                     Task<string> result = content.ReadAsStringAsync();
                     dataObjects = JsonValue.Parse(result.Result);
                 }
-                
-                
+                //9ac38da25c98106b3a6f056614b09ea738a02928
+
 
             }
             else
