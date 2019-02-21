@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Json;
 using System.Linq;
 using System.Net.Http;
@@ -13,6 +14,8 @@ namespace VizLaw_api.Data
     public static class OpenLegalDb
     {
         private const string URL = "https://de.openlegaldata.io/api/";
+
+        private static List<CourtDecision> courtDecisions = null;
 
 
         static JsonValue getApiCall(string urlParameters)
@@ -52,8 +55,44 @@ namespace VizLaw_api.Data
             return dataObjects;
         }
 
+        private static List<CourtDecision> getDecisions()
+        {
+            if(courtDecisions == null)
+            {
+                //Load Data from Source File and stor it in sourceData 
+                DataTable sourceData = new DataAccess.CsvHelper.CsvReader(AppDomain.CurrentDomain.BaseDirectory + @"\Data\CourtData.csv") { cSeperator = '|', cDelimiter = '"', HasHeaderRow = false }.ReadIntoDataTable();
+
+                //Initialize CitationList
+                courtDecisions = new List<CourtDecision>();
+
+                //Load Citations to List
+                foreach (DataRow row in sourceData.Rows)
+                {
+                    CourtDecision dec = new CourtDecision();
+                    dec.id = row[0].ToString();
+                    dec.file_number = row[1].ToString();
+                    dec.date = row[2].ToString();
+                    dec.court = new Court();
+                    dec.court.level_of_appeal = row[3].ToString();
+
+                    courtDecisions.Add(dec);
+                }
+            }
+
+            return courtDecisions;
+        }
+
         public static CourtDecision getCourtDecision(string DecisionId)
         {
+            try
+            {
+                return getDecisions().Where(d => d.id == DecisionId).First();
+            }
+            catch(Exception ex)
+            {
+                return new CourtDecision() { id = DecisionId, file_number = "12 U 123/45", date = "2016-01-01", court = new Court() { id = "0", level_of_appeal = "" } } ;
+            }
+
             CourtDecision result = new CourtDecision();
 
             JsonValue decision = getApiCall("cases/" +  DecisionId);
