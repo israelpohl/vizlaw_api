@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using VizLaw_api.Data;
 using VizLaw_api.DataAccess;
 
 namespace VizLaw_api.Controllers
@@ -17,26 +18,24 @@ namespace VizLaw_api.Controllers
        
 
         // GET api/values/5
-        public nodeData Get(string text)
+        [HttpGet]
+        public IEnumerable<CourtDecision> searchDecisions(string searchQuery)
         {
-            if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
-                CitationNetwork.LoadCitationNetwork();
-
-            //int count = CitationNetwork.Citations.Where(ct =>ct.from_type != "Law" && ct.to_type != "Law").Count();
+            //if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
+            //    CitationNetwork.LoadCitationNetwork();
+            //82520
 
             //return CitationNetwork.Citations.Where(c => c.to_id==id.ToString());
-            return CitationNetwork.getNodeData(text);
+            return             new List<CourtDecision> { OpenLegalDb.getCourtDecision("82520") };
+
         }
 
-        public nodeData Get(int id)
+        public CourtDecision getCourtDecision(string DecisionId)
         {
-            if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
-                CitationNetwork.LoadCitationNetwork();
+            //if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
+            //    CitationNetwork.LoadCitationNetwork();
 
-            //int count = CitationNetwork.Citations.Where(ct =>ct.from_type != "Law" && ct.to_type != "Law").Count();
-
-            //return CitationNetwork.Citations.Where(c => c.to_id==id.ToString());
-            return CitationNetwork.getNodeData(id.ToString());
+            return OpenLegalDb.getCourtDecision(DecisionId);
         }
 
 
