@@ -4,10 +4,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using VizLaw_api.DataAccess;
 
 namespace VizLaw_api.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class ValuesController : ApiController
     {
         // GET api/values
