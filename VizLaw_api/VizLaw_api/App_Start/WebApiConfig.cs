@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Web.Http;
 
 namespace VizLaw_api
@@ -11,7 +12,9 @@ namespace VizLaw_api
         {
             // Web-API-Konfiguration und -Dienste
             config.EnableCors();
-    
+
+            config.Formatters.JsonFormatter.SupportedMediaTypes
+                .Add(new MediaTypeHeaderValue("text/html"));
 
             // Web-API-Routen
             config.MapHttpAttributeRoutes();
