@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using VizLaw_api.Data;
 
 namespace VizLaw_api.DataAccess
 {
@@ -30,7 +32,7 @@ namespace VizLaw_api.DataAccess
         public string to_law_book_code { get; set; }
         public string to_law_section { get; set; }
         public string to_law_title { get; set; }
-        public string to_type { get; set; }
+        public string to_type { get; set; } 
 
         public Citation(DataRow sourceDataRow)
         {
@@ -56,6 +58,78 @@ namespace VizLaw_api.DataAccess
             to_law_section  = sourceDataRow["to_law_section"].ToString();
             to_law_title  = sourceDataRow["to_law_title"].ToString();
             to_type  = sourceDataRow["to_type"].ToString();
+        }
+
+        public void UpdateToDatabase(SqlConnector con)
+        {
+            if (con.GetSqlAsInt($"SELECT COUNT(*) FROM dbo.citations WHERE from_id = {from_id} AND to_id={to_id}") == 0)
+            {
+                //INSERT
+                string sql = $@"INSERT INTO dbo.courts(
+                                id,
+                                chamber,
+                                city,
+                                jurisdiction,
+                                level_of_appeal,
+                                name,
+                                state
+                                ) VALUES (
+                                '{from_case_court_id.Replace("'", "''")}',
+                                '{from_case_court_chamber.Replace("'", "''")}',
+                                '{from_case_court_city.Replace("'", "''")}',
+                                '{from_case_court_jurisdiction.Replace("'", "''")}',
+                                '{from_case_court_level_of_appeal.Replace("'", "''")}',
+                                '{from_case_court_name.Replace("'", "''")}',
+                                '{from_case_court_state.Replace("'", "''")}'
+                                )";
+
+                if (from_case_court_id != null && from_case_court_id.Length > 0 && con.GetSqlAsInt($"SELECT COUNT(*) FROM dbo.courts WHERE id = {from_case_court_id}") == 0)
+                {
+                    con.ExecuteSql(sql);
+                }
+
+                sql = $@"INSERT INTO dbo.citations(
+                                from_id,
+                                to_id,
+                                from_case_court_id,
+                                from_case_date,
+                                from_case_file_number,
+                                from_case_private,
+                                from_case_source_name,
+                                from_case_type,
+                                from_type,
+                                to_case_court_jurisdiction,
+                                to_case_court_level_of_appeal,
+                                to_case_court_name,
+                                to_law_book_code,
+                                to_law_section,
+                                to_law_title,
+                                to_type
+                                ) VALUES(
+                                '{from_id.Replace("'", "''")}',
+                                '{to_id.Replace("'", "''")}',
+                                '{from_case_court_id.Replace("'", "''")}',
+                                '{from_case_date.Replace("'", "''")}',
+                                '{from_case_file_number.Replace("'", "''")}',
+                                '{from_case_private.Replace("'", "''")}',
+                                '{from_case_source_name.Replace("'", "''")}',
+                                '{from_case_type.Replace("'", "''")}',
+                                '{from_type.Replace("'", "''")}',
+                                '{to_case_court_jurisdiction.Replace("'", "''")}',
+                                '{to_case_court_level_of_appeal.Replace("'", "''")}',
+                                '{to_case_court_name.Replace("'", "''")}',
+                                '{to_law_book_code.Replace("'", "''")}',
+                                '{to_law_section.Replace("'", "''")}',
+                                '{to_law_title.Replace("'", "''")}',
+                                '{(from_type.ToUpper() == "LAW" ? "1" : "2")}'
+                                )";
+
+                con.ExecuteSql(sql);
+            }
+            else
+            {
+                //UPDATE ersteinmal nicht ggf. zuviele unnötige updates
+            }
         }
     }
 }

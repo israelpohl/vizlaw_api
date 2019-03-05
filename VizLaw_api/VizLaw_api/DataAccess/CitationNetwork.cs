@@ -15,11 +15,12 @@ namespace VizLaw_api.DataAccess
 
         public static void LoadCitationNetwork()
         {
-            //Load Data from Source File and stor it in sourceData 
-            sourceData = new CsvHelper.CsvReader(AppDomain.CurrentDomain.BaseDirectory + @"\Data\refs.csv") { cSeperator = ',' , cDelimiter='"', HasHeaderRow=true}.ReadIntoDataTable();
-
             //Initialize CitationList
             Citations = new List<Citation>();
+
+            return;
+            //Load Data from Source File and stor it in sourceData 
+            sourceData = new CsvHelper.CsvReader(AppDomain.CurrentDomain.BaseDirectory + @"\Data\refs.csv") { cSeperator = ',' , cDelimiter='"', HasHeaderRow=true}.ReadIntoDataTable();
 
             //Load Citations to List
             foreach(DataRow row in sourceData.Rows)
@@ -35,17 +36,20 @@ namespace VizLaw_api.DataAccess
 
             nodeData result = new nodeData();
 
-            result.nodes.Add(new Node(nodeId, sourceDecision.file_number , sourceDecision.date, sourceDecision.court.level_of_appeal, Citations.Count(c => c.to_id == nodeId).ToString()));
+            result.nodes.Add(new Node(nodeId, sourceDecision.file_number , sourceDecision.date, sourceDecision.court.level_of_appeal, sourceDecision.getCitatedCount().ToString()));
 
 
-            foreach (Citation cit in Citations.Where(c => c.from_id == nodeId))
+            foreach (Citation cit in sourceDecision.getCitations().Where(c => c.from_id == nodeId))
             {
                 //add only if currently not in List
                 if (result.nodes.Count(n => n.nodeId == cit.to_id) == 0)
                 {
                     // from cases always need query the api
                     CourtDecision singedecision = Data.OpenLegalDb.getCourtDecision(cit.to_id);
-                    result.nodes.Add(new Node(cit.to_id, singedecision.file_number, singedecision.date, singedecision.court.level_of_appeal, Citations.Count(c => c.to_id == cit.to_id).ToString()));
+                    //id not found
+                    if (singedecision.id == null)
+                        continue;
+                    result.nodes.Add(new Node(cit.to_id, singedecision.file_number, singedecision.date, singedecision.court.level_of_appeal, singedecision.getCitatedCount().ToString()));
 
                     if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
                         result.edges.Add(new Edge(cit.from_id, cit.to_id));
@@ -53,12 +57,16 @@ namespace VizLaw_api.DataAccess
             
             }
 
-            foreach (Citation cit in Citations.Where(c => c.to_id == nodeId))
+            foreach (Citation cit in sourceDecision.getCitations().Where(c => c.to_id == nodeId))
             {
                 //add only if currently not in List
                 if (result.nodes.Count(n => n.nodeId == cit.from_id) == 0)
                 {
-                    result.nodes.Add(new Node(cit.from_id, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, Citations.Count(c => c.to_id == cit.from_id).ToString()));
+                    CourtDecision singedecision = Data.OpenLegalDb.getCourtDecision(cit.from_id);
+                    //id not found
+                    if (singedecision.id == null)
+                        continue;
+                    result.nodes.Add(new Node(cit.from_id, cit.from_case_file_number, cit.from_case_date, cit.from_case_court_level_of_appeal, singedecision.getCitatedCount().ToString()));
 
                     if (result.edges.Count(e => e.sourceId == cit.from_id && e.targetId == cit.to_id) == 0)
                         result.edges.Add(new Edge(cit.from_id, cit.to_id));
