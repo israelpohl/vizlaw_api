@@ -26,7 +26,7 @@ namespace VizLaw_api.Controllers
             //82520
 
             //return CitationNetwork.Citations.Where(c => c.to_id==id.ToString());
-            return             new List<CourtDecision> { OpenLegalDb.getCourtDecision("82520") };
+            return OpenLegalDb.searchDecisions(searchQuery);
 
         }
 
@@ -38,6 +38,12 @@ namespace VizLaw_api.Controllers
             return OpenLegalDb.getCourtDecision(DecisionId);
         }
 
+        [HttpGet]
+        public string updateDatabase()
+        {
+            OpenLegalDb.reloadOpenLegalData();
+            return "ok";
+        }
 
     }
 }

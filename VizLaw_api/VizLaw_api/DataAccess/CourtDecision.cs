@@ -156,7 +156,7 @@ namespace VizLaw_api.DataAccess
                             '{type.Replace("'", "''")}',
                             '{file_number.Replace("'", "''")}',
                             '{create_date}',
-                            '{date}',
+                            CONVERT(datetime, '{date}',126),
                             '{content.Replace("'", "''")}',
                             {(court != null && court.id.Length > 0 ? "'" + court.id + "'" : "NULL")}
                             )";

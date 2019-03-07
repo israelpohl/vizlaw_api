@@ -109,7 +109,7 @@ namespace VizLaw_api.DataAccess
                                 '{from_id.Replace("'", "''")}',
                                 '{to_id.Replace("'", "''")}',
                                 '{from_case_court_id.Replace("'", "''")}',
-                                '{from_case_date.Replace("'", "''")}',
+                                CONVERT(datetime, '{from_case_date.Replace("'", "''")}', 126),
                                 '{from_case_file_number.Replace("'", "''")}',
                                 '{from_case_private.Replace("'", "''")}',
                                 '{from_case_source_name.Replace("'", "''")}',

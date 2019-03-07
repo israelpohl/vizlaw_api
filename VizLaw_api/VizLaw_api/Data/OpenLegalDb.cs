@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Web;
 using VizLaw_api.DataAccess;
 
+
 namespace VizLaw_api.Data
 {
     public static class OpenLegalDb
@@ -98,6 +99,8 @@ namespace VizLaw_api.Data
 
         public static void reloadOpenLegalData()
         {
+            if (con == null)
+                con = new SqlConnector();
             //Abrufen der Dateien vom WebServer
             //URL https://static.openlegaldata.io/dumps/de/
             List<string> availableFiles = GetDirectoryListingRegexForUrl("https://static.openlegaldata.io/dumps/de/");
@@ -127,13 +130,19 @@ namespace VizLaw_api.Data
             using (StreamReader reader = new StreamReader(AppDomain.CurrentDomain.BaseDirectory + @"Data\cases.json" , Encoding.UTF8))
             {
                 string query = reader.ReadLine();
-
+                int i = 0;
                 while (!reader.EndOfStream)
                 {
 
+                    if (i % 500 == 0)
+                        {
+                            System.Diagnostics.Debug.WriteLine(DateTime.Now.ToLongTimeString() + " " + i + " rows checked");
+
+                        }
                     JsonValue v = JsonValue.Parse(reader.ReadLine());
                     CourtDecision dec = new CourtDecision(v);
                     dec.UpdateToDatabase(con);
+                    i++;
                 }
             }
         }
@@ -144,14 +153,50 @@ namespace VizLaw_api.Data
             //Load Data from Source File and stor it in sourceData 
             DataAccess.CsvHelper.CsvReader csvFile = new DataAccess.CsvHelper.CsvReader(AppDomain.CurrentDomain.BaseDirectory + @"\Data\refs.csv") { cSeperator = ',', cDelimiter = '"', HasHeaderRow = true };
             DataTable sourceData = csvFile.ReadIntoDataTable();
-            csvFile.Dispose();
+           
 
+            csvFile.Dispose();
+            DataTable existingData = con.GetSqlAsDataTable("Select * FROM dbo.citations");
             //Load Citations to List
-            foreach (DataRow row in sourceData.Rows)
+
+            int e = 0;
+            sourceData.Columns.Add("COMPAREKEY");
+            foreach (DataRow r in sourceData.Rows)
             {
-                //Parse Citations, store citation and court in db, if they do not exists
+                if (e % 50000 == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine(DateTime.Now.ToLongTimeString() + " " + e + " keys added (s)");
+                }
+                r["COMPAREKEY"] = r["from_id"] + "-" + r["to_id"];
+                e++;
+            }
+            e = 0;
+            existingData.Columns.Add("COMPAREKEY");
+            foreach (DataRow r in existingData.Rows)
+            {
+                if (e % 50000 == 0)
+                {
+                    System.Diagnostics.Debug.WriteLine(DateTime.Now.ToLongTimeString() + " " + e + " keys added (e)");
+                }
+                r["COMPAREKEY"] = r["from_id"] + "-" + r["to_id"];
+                e++;
+            }
+
+
+            var set = new HashSet<string>(existingData.AsEnumerable().Select(r => (string)r["COMPAREKEY"]));
+            List<DataRow> rowsToInsert = sourceData.AsEnumerable().Where(r => !set.Contains((string)r["COMPAREKEY"])).ToList();
+            
+            int i = 0;
+            foreach (DataRow row in rowsToInsert)
+            {
+                if(i%500==0)
+                {
+                    System.Diagnostics.Debug.WriteLine(DateTime.Now.ToLongTimeString() + " " + i + " rows checked");
+
+                }
                 Citation cit = new Citation(row);
                 cit.UpdateToDatabase(con);
+                i++;
             }
         }
 

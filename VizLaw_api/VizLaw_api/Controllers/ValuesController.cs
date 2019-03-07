@@ -47,6 +47,7 @@ namespace VizLaw_api.Controllers
             return CitationNetwork.getNodeData(text);
         }
 
+ 
         // POST api/values
         public void Post([FromBody]string value)
         {
