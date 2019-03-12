@@ -31,12 +31,12 @@ namespace VizLaw_api.DataAccess
 
         }
 
-        public CourtDecision(int Id, SqlConnector connection)
+        public CourtDecision(int Id, SqlConnector connection, bool loadContent = false)
         {
             try
             {
                 con = connection;
-                DataTable result = con.GetSqlAsDataTable("SELECT d.id, slug, type, file_number, CONVERT(nvarchar(max), create_date, 110) as create_date, CONVERT(nvarchar(max), date, 110) as date, content, court_id, (SELECT COUNT(*) FROM dbo.citations ct WHERE ct.to_id = d.id) countCitated , c.chamber court_chamber, c.city court_city, c.jurisdiction court_jurisdiction, c.level_of_appeal court_level_of_appeal, c.name court_name, c.state court_state FROM dbo.courtdecisions d  LEFT JOIN dbo.courts c on c.id = d.court_id WHERE d.id =" + Id);
+                DataTable result = con.GetSqlAsDataTable($"SELECT d.id, slug, type, file_number, CONVERT(nvarchar(max), create_date, 110) as create_date, CONVERT(nvarchar(max), date, 110) as date, {(loadContent ?  "content" : "'' as content" )}, court_id, (SELECT COUNT(*) FROM dbo.citations ct WHERE ct.to_id = d.id) countCitated , c.chamber court_chamber, c.city court_city, c.jurisdiction court_jurisdiction, c.level_of_appeal court_level_of_appeal, c.name court_name, c.state court_state FROM dbo.courtdecisions d  LEFT JOIN dbo.courts c on c.id = d.court_id WHERE d.id =" + Id);
 
                 foreach (DataRow row in result.Rows)
                 {

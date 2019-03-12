@@ -194,8 +194,13 @@ namespace VizLaw_api.Data
                     System.Diagnostics.Debug.WriteLine(DateTime.Now.ToLongTimeString() + " " + i + " rows checked");
 
                 }
-                Citation cit = new Citation(row);
-                cit.UpdateToDatabase(con);
+                if(!set.Contains((string)row["COMPAREKEY"]))
+                {
+                    Citation cit = new Citation(row);
+                    cit.UpdateToDatabase(con);
+                    set.Add((string)row["COMPAREKEY"]);
+                }
+
                 i++;
             }
         }

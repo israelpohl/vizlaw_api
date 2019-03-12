@@ -19,22 +19,25 @@ namespace VizLaw_api.Controllers
 
         // GET api/values/5
         [HttpGet]
-        public IEnumerable<CourtDecision> searchDecisions(string searchQuery)
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
+        public HttpResponseMessage searchDecisions(string searchQuery)
         {
             //if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
             //    CitationNetwork.LoadCitationNetwork();
             //82520
 
             //return CitationNetwork.Citations.Where(c => c.to_id==id.ToString());
-            return OpenLegalDb.searchDecisions(searchQuery);
+            var response = Request.CreateResponse(HttpStatusCode.OK, OpenLegalDb.searchDecisions(searchQuery));
+            response.Headers.Add("Access-Control-Allow-Origin", "*");
+            return response;
 
         }
-
+        [EnableCors(origins: "*", headers: "*", methods: "*")]
         public CourtDecision getCourtDecision(string DecisionId)
         {
             //if (CitationNetwork.Citations == null || CitationNetwork.Citations.Count() == 0)
             //    CitationNetwork.LoadCitationNetwork();
-
+            
             return OpenLegalDb.getCourtDecision(DecisionId);
         }
 

@@ -62,8 +62,8 @@ namespace VizLaw_api.DataAccess
 
         public void UpdateToDatabase(SqlConnector con)
         {
-            if (con.GetSqlAsInt($"SELECT COUNT(*) FROM dbo.citations WHERE from_id = {from_id} AND to_id={to_id}") == 0)
-            {
+            //if (con.GetSqlAsInt($"SELECT COUNT(*) FROM dbo.citations WHERE from_id = {from_id} AND to_id={to_id}") == 0)
+            //{
                 //INSERT
                 string sql = $@"INSERT INTO dbo.courts(
                                 id,
@@ -125,11 +125,11 @@ namespace VizLaw_api.DataAccess
                                 )";
 
                 con.ExecuteSql(sql);
-            }
-            else
-            {
-                //UPDATE ersteinmal nicht ggf. zuviele unnötige updates
-            }
+            //}
+            //else
+            //{
+            //    //UPDATE ersteinmal nicht ggf. zuviele unnötige updates
+            //}
         }
     }
 }

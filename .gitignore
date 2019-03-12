@@ -262,3 +262,5 @@ __pycache__/
 /VizLaw_api/VizLaw_api/Data/cases.json
 /VizLaw_api/VizLaw_api/Data/refs.csv
 /VizLaw_api/VizLaw_api/Data/refs.csv.gz
+/VizLaw_api/VizLaw_api/Data/cases.json.gz
+/VizLaw_api/VizLaw_api/Properties/PublishProfiles/vizlaw-api - Web Deploy.pubxml
