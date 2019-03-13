@@ -82,17 +82,56 @@ namespace VizLaw_api.Data
         /// <returns></returns>
         public static List<CourtDecision> searchDecisions(string search)
         {
-            if (con == null)
-                con = new SqlConnector();
-
             List<CourtDecision> result = new List<CourtDecision>();
 
-            search = search.Replace("'", "''");
-
-            foreach(DataRow row in con.GetSqlAsDataTable($"SELECT top 50 * FROM dbo.courtdecisions WHERE contains(content, '{search}')  OR contains(file_number, '{search}') ").Rows)
+            try
             {
-                result.Add(getCourtDecision(row["id"].ToString()));
+
+                if (con == null)
+                    con = new SqlConnector();
+
+                
+
+                search = search.Replace("'", "''");
+
+                //Alle Ergebnisse laden
+                DataTable results = con.GetSqlAsDataTable($"SELECT TOP 50 d.id, slug, type, file_number, CONVERT(nvarchar(max), create_date, 110) as create_date, CONVERT(nvarchar(max), date, 110) as date, {(false ? "content" : "'' as content")}, court_id, (SELECT COUNT(*) FROM dbo.citations ct WHERE ct.to_id = d.id) countCitated , c.chamber court_chamber, c.city court_city, c.jurisdiction court_jurisdiction, c.level_of_appeal court_level_of_appeal, c.name court_name, c.state court_state FROM dbo.courtdecisions d  LEFT JOIN dbo.courts c on c.id = d.court_id WHERE contains(content, '\"{search}\"')  OR contains(file_number, '\"{search}\"')");
+
+                foreach (DataRow row in results.Rows)
+                {
+                    result.Add(new CourtDecision(row));
+                }
+
+                string ids = string.Empty;
+
+                foreach (CourtDecision c in result.Where(cd => !string.IsNullOrEmpty(cd.id)))
+                {
+                    ids += c.id + ", ";
+                }
+
+                //IDs für die Abfrage vorbereiten
+                if (ids.EndsWith(", "))
+                {
+                    ids = ids.Substring(0, ids.Length - 2);
+                }
+
+                results = con.GetSqlAsDataTable("SELECT DISTINCT ct.*, c.chamber from_case_court_chamber, c.city from_case_court_city, c.jurisdiction from_case_court_jurisdiction, c.level_of_appeal from_case_court_level_of_appeal, c.name from_case_court_name, c.state from_case_court_state FROM dbo.citations ct LEFT JOIN dbo.courts c ON c.id = ct.from_case_court_id where from_id in (" + ids + ") OR to_id IN (" + ids + ")");
+
+                foreach (DataRow row in results.Rows)
+                {
+                    foreach (CourtDecision d in result.Where(c => c.id == row["from_id"].ToString() || c.id == row["to_id"].ToString()))
+                    {
+                        d.AddCitation(new Citation(row));
+                    }
+
+                }
             }
+            catch
+            {
+                result = new List<CourtDecision>();
+            }
+
+
 
             return result;
         }

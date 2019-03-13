@@ -26,17 +26,52 @@ namespace VizLaw_api.DataAccess
         public string exil { get; set; }
         public string content { get; set; }
 
+        public void AddCitation(Citation cit)
+        {
+            citations.Add(cit);
+        }
+
         public CourtDecision()
         {
 
         }
 
-        public CourtDecision(int Id, SqlConnector connection, bool loadContent = false)
+        public CourtDecision(DataRow row)
+        {
+            citations = new List<Citation>();
+
+            id = row["id"].ToString();
+            slug = row["slug"].ToString();
+            file_number = row["file_number"].ToString();
+            date = row["date"].ToString();
+            create_date = row["create_date"].ToString();
+            update_date = "";
+            type = row["type"].ToString();
+            exil = "";
+            content = row["content"].ToString();
+            citated = (int)row["countCitated"];
+
+            if (row["court_id"] != null && row["court_id"].ToString().Length > 0)
+            {
+                Court c = new Court();
+                c.id = row["court_id"].ToString();
+                c.jurisdiction = row["court_jurisdiction"].ToString();
+                c.level_of_appeal = row["court_level_of_appeal"].ToString();
+                c.name = row["court_name"].ToString();
+                c.slug = "";
+                c.state = row["court_state"].ToString();
+
+                court = c;
+            }
+        }
+
+
+        public CourtDecision(int Id, SqlConnector connection, bool loadContent = true)
         {
             try
             {
                 con = connection;
-                DataTable result = con.GetSqlAsDataTable($"SELECT d.id, slug, type, file_number, CONVERT(nvarchar(max), create_date, 110) as create_date, CONVERT(nvarchar(max), date, 110) as date, {(loadContent ?  "content" : "'' as content" )}, court_id, (SELECT COUNT(*) FROM dbo.citations ct WHERE ct.to_id = d.id) countCitated , c.chamber court_chamber, c.city court_city, c.jurisdiction court_jurisdiction, c.level_of_appeal court_level_of_appeal, c.name court_name, c.state court_state FROM dbo.courtdecisions d  LEFT JOIN dbo.courts c on c.id = d.court_id WHERE d.id =" + Id);
+                DataTable result = con.GetSqlAsDataTable($"SELECT d.id, slug, type, file_number, CONVERT(nvarchar(max), create_date, 110) as create_date, CONVERT(nvarchar(max), date, 110) as date, {(loadContent ?  "content" : "'' as content" )}, court_id, (SELECT COUNT(*) FROM dbo.citations ct WHERE ct.from_id = d.id) countCitated , c.chamber court_chamber, c.city court_city, c.jurisdiction court_jurisdiction, c.level_of_appeal court_level_of_appeal, c.name court_name, c.state court_state FROM dbo.courtdecisions d  LEFT JOIN dbo.courts c on c.id = d.court_id WHERE d.id =" + Id);
 
                 foreach (DataRow row in result.Rows)
                 {
